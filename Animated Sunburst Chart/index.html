@@ -1,0 +1,673 @@
+<head><style>
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+body {
+  font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.tooltip {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	border: 1px solid gray;
+	border-radius: 2px;
+	padding: 4px;
+	background-color: tan;
+}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!-- <script src="simdata.js"></script> -->
+</head>
+<body style=" background-color: #FFFAF0 ">
+  <div width="25%" style=" margin-bottom: 5%">
+   <center>
+    <div style="  height: 5%"></div>
+    <text id='ddate' style="padding-top:5%;color:black;font-size:60px;font-family:Times New Roman">Date</text> 
+   </center>
+  </div>
+	<!-- <div id="div_template" class="tooltip"></div> -->
+  <div style="display: block;width:100%;height:30%;margin-left:20%">
+    <div id='main_chart' style="float:left;padding-top: 2%"></div>
+    <div id='main_chart2' style="float:left;margin-left: 2%"></div>
+    <div id='main_chart4' style="float:top;padding-top: 10%;margin-left: 2%"></div>
+    <div id='main_chart3' style="float:left;margin-left: 2%"></div>
+  </div> 
+ <div id="slider_div" style="width:100%;margin-bottom: 5%" >
+    <input type="range" min="1" max="100" value="50" style="width: 1000px;margin-left: 16%" id="slider1" oninput="updateSlider(this.value)">
+    <button onclick="startanim()" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"style="background:#4285F3;"><i class="material-icons"  >replay</i></button>
+ </div> 
+
+
+  <div style="display: block;width:100%;margin-left:15%"></div>
+  
+</body>
+
+    <script>
+    	// var json = require('./root.json'); //(with path)
+////console.log("Reading Data")
+    	function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+tickerLabels=["2021-01-01","2021-01-02","2021-01-03","2021-01-04",
+			  "2021-01-05","2021-01-06","2021-01-07","2021-01-08",
+			  "2021-01-09","2021-01-10","2021-01-11","2021-01-12",
+			  "2021-01-13","2021-01-14","2021-01-15","2021-01-16",
+			  "2021-01-17","2021-01-18","2021-01-19","2021-01-20",
+			  "2021-01-21","2021-01-22","2021-01-22","2021-01-23",
+			  "2021-01-24","2021-01-25","2021-01-26","2021-01-27",
+			  "2021-01-28","2021-01-29","2021-01-30","2021-01-31"]
+function get_data(labls){
+	var data_sample={}
+	for (var each_lab in labls)
+	{
+			data_sample[labls[each_lab]]=randomInteger(10,50)
+	}
+	console.log(data_sample)
+	// }
+	// ={"2021-01-01":randomInteger(10,50),
+	// 														 "2021-01-02":randomInteger(10,50),
+	// 														 "2021-01-03":randomInteger(10,50),
+	// 														 "2021-01-04":randomInteger(10,50),
+	// 														 "2021-01-05":randomInteger(10,50),
+	// 														 "2021-01-06":randomInteger(10,50),
+	// 														 "2021-01-07":randomInteger(10,50),
+	// 														 "2021-01-08":randomInteger(10,50),
+	// 														 "2021-01-09":randomInteger(10,50),
+	// 														 "2021-01-10":randomInteger(10,50),
+	// 														 "2021-01-11":randomInteger(10,50),
+	// 														 "2021-01-12":randomInteger(10,50),
+	// 														 "2021-01-13":randomInteger(10,50),
+	// 														 "2021-01-14":randomInteger(10,50),
+	// 														 "2021-01-15":randomInteger(10,50),
+	// 														 "2021-01-16":randomInteger(10,50),
+	// 														 "2021-01-17":randomInteger(10,50),
+	// 														 "2021-01-18":randomInteger(10,50),
+	// 														 "2021-01-19":randomInteger(10,50),
+	// 														 "2021-01-20":randomInteger(10,50),
+	// 														 "2021-01-21":randomInteger(10,50),
+	// 														 "2021-01-22":randomInteger(10,50),
+	// 														 "2021-01-23":randomInteger(10,50),
+	// 														 "2021-01-24":randomInteger(10,50),
+	// 														 "2021-01-25":randomInteger(10,50),
+	// 														 "2021-01-26":randomInteger(10,50),
+	// 														 "2021-01-27":randomInteger(10,50),
+	// 														 "2021-01-28":randomInteger(10,50),
+	// 														 "2021-01-29":randomInteger(10,50),
+	// 														 "2021-01-30":randomInteger(10,50),
+	// 														}	
+	return data_sample
+}
+nodeData={'name':'TOPIC','children':[
+{'name':'Building:A','children':[
+						{'name':'Room-A1','children':[
+													{'name':'Adult',
+													'sizes':get_data(tickerLabels)
+													},
+												  	{'name':'Children',
+													'sizes':get_data(tickerLabels)
+												  	},
+												  	{'name':'Teens',
+													'sizes':get_data(tickerLabels)
+												  	}
+												]
+						},
+						{'name':'Room-A2','children':[
+													{'name':'Adult',
+													'sizes':get_data(tickerLabels)
+													},
+												  	{'name':'Children',
+													'sizes':get_data(tickerLabels)
+												  	},
+												  	{'name':'Teens',
+													'sizes':get_data(tickerLabels)
+												  	}
+												]
+						},
+								 
+					    ]
+},
+{'name':'Building:B','children':[
+						{'name':'Room-B1','children':[
+													{'name':'Adult',
+													'sizes':get_data(tickerLabels)
+													},
+												  	{'name':'Children',
+													'sizes':get_data(tickerLabels)
+												  	},
+												  	{'name':'Teens',
+													'sizes':get_data(tickerLabels)
+												  	}
+												]
+						},
+						{'name':'Room-B2','children':[
+													{'name':'Adult',
+													'sizes':get_data(tickerLabels)
+													},
+												  	{'name':'Children',
+													'sizes':get_data(tickerLabels)
+												  	},
+												  	{'name':'Teens',
+													'sizes':get_data(tickerLabels)
+												  	}
+												]
+						}
+								 
+					    ]
+},
+]}
+
+document.getElementById("slider1").setAttribute("max",tickerLabels.length);
+class objdefaultDict {
+      constructor(){
+      }
+      put(key,val){
+        // ////console.log(key,this[key],val)
+        this.key=val;
+        return this[key]
+      }
+      get(key) {
+          if (this.hasOwnProperty(key)) {
+              return this[key];
+          } else {
+              this[key]=new intdefaultDict();
+          }
+          return this[key];
+      }
+  }
+class intdefaultDict {
+      constructor(){
+
+      }
+      put(key,val){
+        ////console.log(key,this[key],val)
+        this.key=val;
+        ////console.log(key,this[key],val)
+        return this[key]
+      }
+      get(key) {
+          if (this.hasOwnProperty(key)) {
+              return this[key];
+          } else {
+              this[key]=0;
+          }
+          return this[key];
+      }
+  }
+
+class sunburst_chart{
+
+  constructor(opts){
+    this.filter_count=opts.filter_count;
+    this.animate_interval=opts.animate_interval;
+    this.chart_name=opts.chart_name;
+    this.rawData=opts.rawData;
+    this.text_size=opts.text_size;
+    this.tickerLabels=opts.tickerLabels;
+    this.element=opts.element;
+    this.ticker=0;
+    this.width = opts.width;  
+    this.height = opts.height;
+    this.max_ticker=this.tickerLabels.Length-2  ;
+    // this.animate_interval=200;
+    if(opts.color_scaler===false){
+      this.color=d3.scaleOrdinal(d3.schemeCategory20c); 
+    }
+    else{
+    this.color = opts.color_scaler ;
+
+    }
+
+    this.date_elemet=d3.select("#ddate")
+    // this.status_tracker=opts.status_tracker;
+
+    this.main_chart_flag=opts.main_chart_flag;
+
+    this.status_tracker={0:new defaultDict(function(){return 0}),
+                  1:new defaultDict(function(){return 0}),
+                  2:new defaultDict(function(){return 0}),
+                  3:new defaultDict(function(){return 0}),
+                  4:new defaultDict(function(){return 0}),
+                  5:new defaultDict(function(){return 0}),
+                  6:new defaultDict(function(){return 0}),
+                  7:new defaultDict(function(){return 0}),
+                  8:new defaultDict(function(){return 0}),
+                  9:new defaultDict(function(){return 0}),
+                  10:new defaultDict(function(){return 0}),
+                  11:new defaultDict(function(){return 0})};
+    if(this.main_chart_flag){
+      this.nodeData=opts.rawData;
+      this.refresh_root_data=this.mainchart_datarefresh
+    }
+    else{
+      this.subchart_depth=opts.subchart_depth
+      this.set_nodeData()
+      this.refresh_root_data=this.subchart_datarefresh
+    }
+
+    this.draw();
+
+  }
+  reset_status_tracker(){
+    for (var indx in this.status_tracker){
+      this.status_tracker[indx]=new defaultDict(function(){return 0});
+    }
+  }
+
+  draw()
+  {
+    this.radius = Math.min(this.width, this.height) / 2;  // < -- 2
+
+
+    this.element.innerHTML = '';
+
+    this.svg = d3.select(this.element).append('svg');
+    this.svg.attr('width',  this.width);
+    this.svg.attr('height', this.height);
+
+
+    this.plot=this.svg.append("g")
+                    .call(d3.zoom().on("zoom", function () {
+                       that.plot.attr("transform", d3.event.transform)
+                    }))
+                      .attr("transform", 'translate(' + this.width / 2 + ',' + this.height / 2 + ')');
+
+    this.Tooltip = d3.select(this.element).append('div').attr("class","tooltip")
+    .attr("id",this.chart_name+"tooltip")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    this.Tooltip=d3.select("#"+this.chart_name+"tooltip")
+
+
+    if(this.main_chart_flag){this.reset_status_tracker();}
+    this.setData()
+    this.initToolTip()
+    this.initPartition()
+    this.setPartition()
+    this.initArc()
+    this.setArc()
+  }
+
+  set_nodeData(){
+    this.nodeData={'name':'topic','children':[]}
+
+    for (var each in this.rawData[this.subchart_depth]){
+      this.nodeData.children.push({'name':each,'size':this.rawData[this.subchart_depth][each]})
+    }
+    // ////console.log(this.nodeData,this.rawData[this.subchart_depth])
+
+  }
+  
+  setData(){
+    const that=this;
+    that.parent_root = d3.hierarchy(that.nodeData)
+    that.root=that.parent_root;
+    this.refresh_root_data();
+  }
+
+  initPartition(){
+    this.partition = d3.partition()
+    .size([2 * Math.PI, this.radius]);
+  }
+  setPartition(){
+    this.partition(this.root);
+    // ////console.log(this.root)
+  }
+
+  initArc(){
+    this.arc = d3.arc()
+    .startAngle(function (d) { d.x0s = d.x0; return d.x0; })
+    .endAngle(function (d) { d.x1s = d.x1; return d.x1; })
+    .innerRadius(function (d) { return d.y0; })
+    .outerRadius(function (d) { return d.y1; })   
+  }
+
+  initToolTip(){
+    const that=this;
+
+      const br=that.element.getBoundingClientRect();
+      this.tooltip_mouseover = function(d) {
+          // //console.log(d3.mouse(this),[br.x,br.y],[that.width/2,that.height/2])
+        that.Tooltip
+          .style("opacity", 1)
+        d3.select(this)
+          .style("stroke", "black")
+          .style("opacity", 1)
+        that.Tooltip
+          .html("Stage: " + d.parent.data.name +"<br>Type: "+d.data.name +"<br>Value: "+d.value +"<br>Root value: "+that.root.value +"<br>Prop(%): "+ Math.floor(d.value*100/that.root.value) +"%")
+          .style("left", (d3.mouse(this)[0]+br.x+that.width/2) + "px")
+          .style("top", (d3.mouse(this)[1]+br.y+that.height/2) + "px")
+      }
+      this.tooltip_mousemove = function(d) {
+        // ////console.log("x",d3.mouse(this)[0]+width/2)
+        that.Tooltip
+          .html("Stage: " + d.parent.data.name +"<br>Type: "+d.data.name +"<br>Value: "+d.value +"<br>Root value: "+that.root.value +"<br>Prop(%): "+ Math.floor(d.value*100/that.root.value) +"%")
+          .style("left", (d3.mouse(this)[0]+br.x+that.width/2) + "px")
+          .style("top", (d3.mouse(this)[1]+br.y+that.height/2) + "px")
+          // //console.log(d3.mouse(this),[br.x,br.y],[that.width/2,that.height/2])
+      }
+      this.tooltip_mouseleave = function(d) {
+        that.Tooltip
+          .style("opacity", 0)
+        d3.select(this)
+          .style("stroke", "none")
+          .style("opacity", 0.8)
+      }
+
+  }
+  setArc(){
+    const that=this;
+
+    this.slice=this.plot.selectAll('g')  // <-- 1
+        .data(this.root.descendants())  // <-- 2
+        .enter()
+        .append('g')
+        .attr("class", "node")
+        .on("mouseover", this.tooltip_mouseover)
+        .on("mousemove", this.tooltip_mousemove)
+        .on("mouseleave", this.tooltip_mouseleave);   // <-- 3
+
+    this.slice.append('path')  // <-- 4
+        .attr("display", function (d) { return d.depth ? null : "none"; })  // <-- 5
+        .attr("d", this.arc)  // <-- 6
+        .style('stroke', '#fff')  // <-- 7
+        .style("fill", function (d) { return that.color(d.data.name); })
+        .style('visibility','visible')
+        .filter(d=> d.value<that.filter_count)
+        .style('visibility','hidden')
+
+    this.slice  // <-- 1
+    .append("text")  // <-- 2
+    .attr("transform", function(d) {
+        return "translate(" + that.arc.centroid(d)+20 + ")rotate(" + that.computeTextRotation(d) + ")"; 
+        }) // <-- 3
+
+    .text(function(d) { return d.parent ? d.data.name : "" })  
+    .attr("dx", "-20")  // <-- 4
+    .attr("dy", ".5em")  // <-- 5
+    .style("pointer-events","none")
+    .style('visibility','visible')
+    .style('font-size',this.text_size)
+    .style('text-overflow','ellipsis')
+    .style('fill','black')
+    .filter(d=> d.value < this.filter_count)
+    .style('visibility','hidden')
+ 
+  }
+  computeTextRotation(d) {
+      var angle = (d.x0 + d.x1) / Math.PI * 90;  // <-- 1
+
+      // Avoid upside-down labels
+      return (angle < 10 || angle > 350) ? angle+90 : angle-90;  // <--2 "labels aligned with slices"
+
+      // Alternate label formatting
+      //return (angle < 180) ? angle - 90 : angle + 90;  // <-- 3 "labels as spokes"
+  }
+
+  getarcTweenPath(){
+    const that=this;
+    function arcTweenPath(a, i) {
+          // ////console.log("A",that.ticker)
+          var oi = d3.interpolate({ x0: a.x0s, x1: a.x1s }, a);  // <-- 1
+          function tween(t) {  // <-- 2
+              var b = oi(t);  // <-- 3
+              a.x0s = b.x0;  // <-- 4
+              a.x1s = b.x1;  // <-- 4
+              return that.arc(b);  // <-- 5
+          }
+
+          return tween;  // <-- 6
+        }
+    return arcTweenPath
+  }
+  getarcTweenText(){
+    const that=this;
+    function arcTweenText(a, i) {
+          var oi = d3.interpolate({ x0: a.x0s, x1: a.x1s }, a);
+          function ttween(t) {
+              var b = oi(t);
+              return "translate(" + that.arc.centroid(b) + ")rotate(" + that.computeTextRotation(b) + ")";
+          }
+          return ttween;
+        }
+  
+    return arcTweenText
+  }
+
+  subchart_datarefresh(){
+    const that=this;
+
+    this.parent_root.sum(function (d) 
+    {
+      
+      if('size' in d){
+        d.size=that.rawData[that.subchart_depth][d.name];
+    }
+
+    // that.status_tracker.put(d.name,that.status_tracker.get(d.name)+d.value);
+    return d.size;
+
+
+    })
+    that.root=this.parent_root;
+    that.root.sort(function(a, b) { return b.value - a.value; });  // <-- 5
+    
+    ////console.log("FIRST S",(JSON.parse(JSON.stringify(that.status_tracker))))
+  }
+
+  mainchart_datarefresh(){
+    const that=this;
+
+    this.parent_root.sum(function (d) 
+    {
+      
+      if('sizes' in d){
+        var new_size=d.sizes[that.tickerLabels[ that.ticker]];
+        // //console.log(that.ticker,new_size,that.tickerLabels[ that.ticker]);
+        //console.log(JSON.stringify(d.sizes))
+        console.log(new_size)
+        d.size=new_size===new_size?new_size:0;//?d.sizes[that.ticker]:d.sizes[that.ticker]+10;
+      
+    }
+
+    // that.status_tracker.put(d.name,that.status_tracker.get(d.name)+d.value);
+    return d.size;
+
+
+    })
+    that.root=this.parent_root;
+    that.reset_status_tracker();
+    that.root.sort(function(a, b) { return b.value - a.value; });  // <-- 5
+    that.reset_status_tracker();
+    that.root.each(function(d){
+
+                      // //console.log(d.depth,d.data.name)
+                      var tm=that.status_tracker[d.depth][d.data.name];
+                      // //console.log(d.depth,d.data.name,tm);
+                      that.status_tracker[d.depth][d.data.name]=tm+d.value;
+      
+                    });
+
+
+
+  }
+  animate_step(){
+
+    const that=this;
+    that.refresh_root_data();
+    //console.log(this.max_ticker,this.ticker)
+    ////console.log(this.ticker,this.max_ticker,this.animate_interval);
+    // if(this.interval_id==false){alert("FFF"+that.ticker+"/"+this.max_ticker)}
+
+    this.ticker=this.ticker+1<this.max_ticker?this.ticker+1:this.max_ticker
+    // if(this.interval_id==false){alert("FFF2"+that.ticker)}
+    if(this.ticker==this.max_ticker)
+    {
+      this.stop();
+    }
+    this.setPartition();  
+    // if(this.interval_id==false){alert("B"+that.ticker)}
+    // if(this.interval_id==false){alert(that.tickerLabels[that.ticker])}
+    this.date_elemet.html(that.tickerLabels[that.ticker]);
+    d3.select('#slider1').attr("value",that.ticker);
+    
+    // const this.filter_count=200
+    this.slice.selectAll("path")
+    .style('visibility','visible')
+    .filter(function(d){return  d.value<that.filter_count })
+    .style('visibility','hidden')
+    this.slice.selectAll("path")
+    .filter(function(d){return  d.value>that.filter_count }).transition().duration(that.animate_interval).attrTween("d",this.getarcTweenPath());  // <-- 7
+    this.slice.selectAll("text")
+    .style('visibility','visible')
+    .filter(d=> d.value<that.filter_count)
+    .style('visibility','hidden')
+    this.slice.selectAll("text")
+    .filter(function(d){return  d.value>that.filter_count })
+    .transition().duration(that.animate_interval).attrTween("transform",this.getarcTweenText());  // <-- 8
+
+  } 
+  reset(new_Tic){
+    // alert("c"+new_Tic)
+    this.stop();
+    this.ticker=new_Tic;
+    this.animate_step();
+
+
+  }
+  play(){
+    // alert("c"+new_Tic)
+    this.start();
+
+
+  }
+  start(){
+    this.ticker=0;
+    this.max_ticker=this.tickerLabels.length  ;
+    var self=this;
+    
+    this.draw()
+    this.interval_id =setInterval (function() { self.animate_step(); }, this.animate_interval);
+  }
+  stop(){
+    clearInterval(this.interval_id);
+    this.interval_id=false;
+  }
+}
+function defaultDict(createValue) {
+    return new Proxy(Object.create(null), {
+        get(storage, property) {
+            if (!(property in storage))
+                storage[property] = createValue(property);
+            return storage[property];
+        }
+    });
+}
+
+
+// var m = defaultDict(function() { return [] });
+
+  var animate_interval_id=800
+  var fcount=0
+  var main_chart = new sunburst_chart({
+      chart_name:'main_chart',
+      element:document.querySelector('#main_chart'),
+      rawData:nodeData,
+      main_chart_flag:true,
+      subchart_depth:0,
+      tickerLabels:tickerLabels,
+      width:500,
+      height:500,
+      text_size:8,
+      animate_interval:animate_interval_id,
+      filter_count:fcount,
+      color_scaler:false,
+  })
+
+main_chart_status_tracker=main_chart.status_tracker;
+//console.log(main_chart_status_tracker)
+ main_chart.start()
+
+  var main_chart2 = new sunburst_chart({
+      chart_name:'sub_chart_app_state',
+      element:document.querySelector('#main_chart2'),
+      rawData:main_chart.status_tracker,
+      main_chart_flag:false,
+      subchart_depth:2,
+      tickerLabels:tickerLabels,
+      width:200,
+      height:200,
+      text_size:8,
+
+      animate_interval:animate_interval_id,
+      filter_count:fcount,
+      color_scaler:main_chart.color,
+  })
+ main_chart2.start()
+
+
+  var main_chart3 = new sunburst_chart({
+      chart_name:'sub_chart_app_status',
+      element:document.querySelector('#main_chart3'),
+      rawData:main_chart.status_tracker,
+      main_chart_flag:false,
+      subchart_depth:4,
+      tickerLabels:tickerLabels,
+      width:200,
+      height:200,
+      text_size:8,
+      animate_interval:animate_interval_id,
+      filter_count:fcount,
+      color_scaler:main_chart.color,
+  })
+ main_chart3.start()
+
+
+  var main_chart4 = new sunburst_chart({
+      chart_name:'sub_chart_app_status',
+      element:document.querySelector('#main_chart4'),
+      rawData:main_chart.status_tracker,
+      main_chart_flag:false,
+      subchart_depth:3,
+      tickerLabels:tickerLabels,
+      width:200,
+      height:200,
+      text_size:8,
+      animate_interval:animate_interval_id,
+      filter_count:fcount,
+      color_scaler:main_chart.color,
+  })
+ main_chart4.start()
+
+const qthat=this;
+  function updateSlider(sm) {
+    var slideAmount=parseInt(sm);
+
+    // alert("A"+slideAmount)
+    qthat.main_chart.reset(slideAmount)
+    qthat.main_chart2.reset(slideAmount)
+    qthat.main_chart3.reset(slideAmount)
+    qthat.main_chart4.reset(slideAmount)
+  }
+  function startanim() {
+
+    // alert("A"+slideAmount)
+    qthat.main_chart.play()
+    qthat.main_chart2.play()
+    qthat.main_chart3.play()
+    qthat.main_chart4.play()
+  }
+</script>
+
+
+</body>
